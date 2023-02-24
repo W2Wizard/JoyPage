@@ -1,10 +1,7 @@
 <script lang="ts">
 import Highcharts, { type HTMLDOMElement } from "highcharts";
 import { onMount } from "svelte";
-
-export const prerender = true;
-
-//===========================================================================//
+import { myData } from "$lib/stores/data";
 
 let JoyChart: HTMLDivElement;
 
@@ -26,12 +23,20 @@ onMount(() => {
 		series: [
 			{
 				name: "Joy",
-				data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+				data: $myData,
 			},
 		]
 	};
 
-	Highcharts.chart(JoyChart, options);
+	const chart = Highcharts.chart(JoyChart, options);
+	myData.subscribe((data) => {
+		console.log("data changed!");
+		chart.series[0].update({
+			data: data
+		}, true);
+		// chart.reflow();
+		// chart.redraw();
+	});
 });
 </script>
 
